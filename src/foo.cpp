@@ -15,12 +15,4 @@ void Hello() {
 
     spdlog::set_level(spdlog::level::debug); // Set global log level to debug
     spdlog::debug("This message should be displayed..");
-
-//    // change log pattern
-//    spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
-//
-//    // Compile time log levels
-//    // define SPDLOG_ACTIVE_LEVEL to desired level
-//    SPDLOG_TRACE("Some trace message with param {}", 42);
-//    SPDLOG_DEBUG("Some debug message");
 }

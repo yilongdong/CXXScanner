@@ -24,21 +24,32 @@ TODO: Fill out this long description.
 # vcpkg integrate x-fish
 vcpkg integrate zsh
 ```
+
+### 安装ninja
+```shell
+brew install ninja
+```
+
 ### 编译
 ```shell
 
 cmake -B build/debug -S . -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=$(dirname $(which vcpkg))/scripts/buildsystems/vcpkg.cmake
 cmake --build build/debug --parallel
+# cd build/debug/
+# ninja install
 ```
 或者运行脚本
 ```shell
 ./build.sh
+# cd build/debug/
+# ninja install
 ```
 
 ## Usage
 
 ```shell
 ./build/debug/tudumper
+# tudumper
 ```
 
 ## API
