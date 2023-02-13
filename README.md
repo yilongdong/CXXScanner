@@ -3,8 +3,16 @@
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 输入一条编译指令以及C++源文件，对编译指令对应的翻译转换单元的代码进行AST分析，并将分析结果输出为json分析模型
-
+```mermaid
+graph LR
+    D[源文件] --> E(构建工具)
+    E --> F[编译数据库] --> A[编译指令]
+    A --> B(tudumper)
+    C[配置文件] --> B
+    B --> xx.tu.json
+```
 TODO: Fill out this long description.
+
 
 ## Table of Contents
 

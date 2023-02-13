@@ -2,6 +2,10 @@
 #include "spdlog/spdlog.h"
 #include <iostream>
 
+int Add(int a, int b) {
+    return a + b;
+}
+
 void Hello() {
     std::cout << "Hello, World!" << std::endl;
     spdlog::info("Welcome to spdlog!");
