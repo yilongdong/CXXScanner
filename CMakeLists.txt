@@ -1,13 +1,20 @@
 cmake_minimum_required(VERSION 3.23)
-# 乱整编译器给整坏了，为了配合IDE，使用brew安装的clang。
-set(CMAKE_C_COMPILER /opt/homebrew/Cellar/llvm/15.0.7_1/bin/clang)
-set(CMAKE_CXX_COMPILER /opt/homebrew/Cellar/llvm/15.0.7_1/bin/clang++)
+# 把系统编译器给整坏了，可能是因为没有编译compile-rt之类的，所以这里指定使用brew安装的clang。
+set(CMAKE_C_COMPILER /opt/homebrew/opt/llvm/bin/clang)
+set(CMAKE_CXX_COMPILER /opt/homebrew/opt/llvm/bin/clang++)
 
 project(tudumper)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+# 检测内存泄露与未定义行为
+if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+    message(STATUS "add memcheck")
+    set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    set(CMAKE_Ｌ_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+endif()
 
 include_directories(include)
 
