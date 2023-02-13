@@ -11,10 +11,17 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # 检测内存泄露与未定义行为
 if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
     message(STATUS "add memcheck")
-    set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-    set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-    set(CMAKE_Ｌ_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    link_directories(/opt/homebrew/lib)
+    # 内存泄露与未定义行为检查
+    set(DEBUG_CONFIG "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    # 内存泄露与CPU和堆栈分析(需要gperftools)
+    string(APPEND DEBUG_CONFIG " -lprofiler -ltcmalloc")
+    set(CMAKE_CXX_FLAGS ${DEBUG_CONFIG})
+    set(CMAKE_C_FLAGS ${DEBUG_CONFIG})
+    set(CMAKE_Ｌ_FLAGS ${DEBUG_CONFIG})
 endif()
+
+
 
 include_directories(include)
 
