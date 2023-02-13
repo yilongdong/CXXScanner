@@ -1,4 +1,4 @@
-# tudumper
+# tu-dumper
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
@@ -25,6 +25,8 @@ TODO: Fill out this long description.
 
 ## Install
 
+### 安装cmake
+略
 ### 安装vcpkg
 [vcpkg](https://vcpkg.io/en/index.html)
 ```shell
@@ -40,14 +42,6 @@ brew install ninja
 
 ### 编译
 ```shell
-
-cmake -B build/debug -S . -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=$(dirname $(which vcpkg))/scripts/buildsystems/vcpkg.cmake
-cmake --build build/debug --parallel
-# cd build/debug/
-# ninja install
-```
-或者运行脚本
-```shell
 ./build.sh
 # cd build/debug/
 # ninja install
@@ -56,8 +50,7 @@ cmake --build build/debug --parallel
 ## Usage
 
 ```shell
-./build/debug/tudumper
-# tudumper
+./build/debug/standalone/tudumper
 ```
 
 ## API

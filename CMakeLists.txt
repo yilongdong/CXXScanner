@@ -21,10 +21,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
     set(CMAKE_Ｌ_FLAGS ${DEBUG_CONFIG})
 endif()
 
-
-
 include_directories(include)
-
 add_subdirectory(lib)
 add_subdirectory(standalone)
 add_subdirectory(tests)
@@ -32,6 +29,7 @@ add_subdirectory(tests)
 ## 生成库文档
 include(DocForLibrary)
 include(DocForCLITool)
+
 ## 安装
 install(TARGETS tudumper DESTINATION bin)
 install(TARGETS TUDumperLib LIBRARY DESTINATION lib)
