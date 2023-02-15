@@ -1,2 +1,3 @@
 add_executable(tudumper main.cpp)
-target_link_libraries(tudumper PRIVATE utility::log)
+find_package(gflags REQUIRED)
+target_link_libraries(tudumper PRIVATE TUDumperLib gflags::gflags)

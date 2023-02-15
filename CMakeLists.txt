@@ -7,6 +7,10 @@ project(tudumper)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE
+            STRING "Build type (default Debug):" FORCE)
+endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # 检测内存泄露与未定义行为
 if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
@@ -21,14 +25,19 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
     set(CMAKE_Ｌ_FLAGS ${DEBUG_CONFIG})
 endif()
 
+## 生成库文档
+include(DocForLibrary)
+include(DocForCLITool)
+
+## 引入LibTooling
+include(AddLibTooling)
+
 include_directories(include)
 add_subdirectory(lib)
 add_subdirectory(standalone)
 add_subdirectory(tests)
 
-## 生成库文档
-include(DocForLibrary)
-include(DocForCLITool)
+
 
 ## 安装
 install(TARGETS tudumper DESTINATION bin)
