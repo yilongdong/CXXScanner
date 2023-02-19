@@ -43,14 +43,14 @@ brew install ninja
 ### 编译
 ```shell
 ./build.sh
-# cd build/debug/
-# ninja install
+ln -s /usr/local/lib/clang/  ./install/lib/clang
+./install/bin/tudumper --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
 ```
 
 ## Usage
 
 ```shell
-./build/debug/standalone/tudumper
+./install/bin/tudumper --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
 ```
 
 ## API
