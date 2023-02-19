@@ -3,12 +3,12 @@
 #include <spdlog/spdlog.h>
 #include "utility/singleton.h"
 
-namespace utility {
-class MMLogger final : public ::utility::LazySingleton<MMLogger> {
+namespace tudumper::utility {
+class MMLogger final : public tudumper::utility::LazySingleton<MMLogger> {
 public:
     // 使用token防止直接构造对象
     MMLogger() = delete;
-    explicit MMLogger(typename ::utility::LazySingleton<MMLogger>::token);
+    explicit MMLogger(typename tudumper::utility::LazySingleton<MMLogger>::token);
 
 
     void setLogLevel(std::string const& level);
@@ -22,10 +22,10 @@ private:
 };
 }
 
-#define SET_LOGLEVEL(level) utility::MMLogger::instance().setLogLevel(level);
-#define LOG_TRACE(...)      SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::trace, __VA_ARGS__)
-#define LOG_DEBUG(...)      SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::debug, __VA_ARGS__)
-#define LOG_INFO(...)       SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::info, __VA_ARGS__)
-#define LOG_WARN(...)       SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::warn, __VA_ARGS__)
-#define LOG_ERROR(...)      SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::err, __VA_ARGS__)
-#define LOG_CRITICAL(...)   SPDLOG_LOGGER_CALL(utility::MMLogger::instance().getLogger().get(), spdlog::level::critical, __VA_ARGS__)
+#define SET_LOGLEVEL(level) tudumper::utility::MMLogger::instance().setLogLevel(level);
+#define LOG_TRACE(...)      SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::trace, __VA_ARGS__)
+#define LOG_DEBUG(...)      SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::debug, __VA_ARGS__)
+#define LOG_INFO(...)       SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::info, __VA_ARGS__)
+#define LOG_WARN(...)       SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::warn, __VA_ARGS__)
+#define LOG_ERROR(...)      SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::err, __VA_ARGS__)
+#define LOG_CRITICAL(...)   SPDLOG_LOGGER_CALL(tudumper::utility::MMLogger::instance().getLogger().get(), spdlog::level::critical, __VA_ARGS__)

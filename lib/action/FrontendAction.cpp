@@ -3,7 +3,7 @@
 #include "action/FrontendAction.h"
 #include "callback/PP/CXXInclusionCallback.h"
 
-using namespace tudumper;
+using namespace tudumper::action;
 
 std::unique_ptr<clang::ASTConsumer>
 FrontendAction::CreateASTConsumer(clang::CompilerInstance &CI, clang::StringRef InFile) {

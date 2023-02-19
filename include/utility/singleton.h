@@ -1,6 +1,6 @@
 #include <memory>
 
-namespace utility {
+namespace tudumper::utility {
     /*!
      * 懒加载的单例基类模板
      * LazySingleton<T> 中提供了 struct token 的方法来拒绝使用者直接构造一个类

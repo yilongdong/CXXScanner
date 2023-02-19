@@ -4,7 +4,7 @@
 
 #include "context/CXXAnalysisContext.h"
 
-namespace tudumper {
+namespace tudumper::action {
     class FrontendAction : public clang::ASTFrontendAction {
     public:
         FrontendAction() = default;
@@ -18,7 +18,8 @@ namespace tudumper {
     class FrontendActionFactory : public clang::tooling::FrontendActionFactory {
     public:
         std::unique_ptr<clang::FrontendAction> create() override {
-            return std::make_unique<FrontendAction>();
+            LOG_INFO("make frontend action");
+            return std::make_unique<::tudumper::action::FrontendAction>();
         }
     };
 }

@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 //            files = split(FLAGS_files, ',');
         }
         clang::tooling::ClangTool tool(*db, files);
-        tudumper::FrontendActionFactory factory;
+        tudumper::action::FrontendActionFactory factory;
         tool.run(&factory);
     } else {
         LOG_ERROR("Fail to load compile database from {} with error msg {}", compdbPath.parent_path().u8string(), errorMsg);
