@@ -4,18 +4,9 @@
 using namespace tudumper::callback;
 
 CXXInclusionCallback::CXXInclusionCallback(clang::Preprocessor &PP, ConsumerFunction consume)
-    :PP{PP}, consume{consume} {}
+    :PP{PP}, consume{std::move(consume)} {}
 
-CXXInclusionCallback::~CXXInclusionCallback() {}
-
-bool isValidLoc(clang::FullSourceLoc const& fullSourceLoc) {
-    if (!fullSourceLoc.hasManager()) {
-        LOG_CRITICAL("FullSourceLoc without SrcMgr");
-        return false;
-    }
-    auto presumedLoc = fullSourceLoc.getPresumedLoc();
-    return fullSourceLoc.isValid() && presumedLoc.isValid();
-}
+CXXInclusionCallback::~CXXInclusionCallback() {};
 
 void CXXInclusionCallback::InclusionDirective(clang::SourceLocation HashLoc, const clang::Token &IncludeTok,
                                               llvm::StringRef FileName, bool IsAngled,

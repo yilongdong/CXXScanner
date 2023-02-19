@@ -2,5 +2,5 @@
 
 
 std::string tudumper::model::CXXInclusion::dump() const {
-    return "";
+    return filename.filename().u8string() + " in " + loc.filename.filename().u8string();
 }
