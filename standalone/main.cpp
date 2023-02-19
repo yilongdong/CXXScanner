@@ -1,4 +1,3 @@
-#include <iostream>
 #include <filesystem>
 #include <gflags/gflags.h>
 #include <clang/Tooling/Tooling.h>
@@ -22,7 +21,7 @@ int main(int argc, char* argv[]) {
     std::filesystem::path compdbPath { FLAGS_compdb };
 
     LOG_INFO("options (compdb: {}, output_dir: {}, files: {}, verbose: {} )",
-             compdbPath.u8string(), FLAGS_output_dir, FLAGS_files , FLAGS_verbose);
+             compdbPath.filename().u8string(), FLAGS_output_dir, FLAGS_files , FLAGS_verbose);
 
     std::string errorMsg;
     if (auto db =
@@ -32,8 +31,10 @@ int main(int argc, char* argv[]) {
         }
         else {
             files = tudumper::utility::split(FLAGS_files, ",");
-//            files = split(FLAGS_files, ',');
         }
+        std::for_each(files.begin(), files.end(), [](std::string const& file) {
+            LOG_INFO("file = {}", file);
+        });
         clang::tooling::ClangTool tool(*db, files);
         tudumper::action::FrontendActionFactory factory;
         tool.run(&factory);
