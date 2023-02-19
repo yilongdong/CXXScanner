@@ -18,7 +18,7 @@ namespace tudumper::action {
     class FrontendActionFactory : public clang::tooling::FrontendActionFactory {
     public:
         std::unique_ptr<clang::FrontendAction> create() override {
-            LOG_INFO("make frontend action");
+            LOG_DEBUG("make frontend action");
             return std::make_unique<::tudumper::action::FrontendAction>();
         }
     };

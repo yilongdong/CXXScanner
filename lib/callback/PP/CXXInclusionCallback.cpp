@@ -4,9 +4,13 @@
 using namespace tudumper::callback;
 
 CXXInclusionCallback::CXXInclusionCallback(clang::Preprocessor &PP, ConsumerFunction consume)
-    :PP{PP}, consume{std::move(consume)} {}
+    :PP{PP}, consume{std::move(consume)} {
+    LOG_DEBUG("construct");
+}
 
-CXXInclusionCallback::~CXXInclusionCallback() {};
+CXXInclusionCallback::~CXXInclusionCallback() {
+    LOG_DEBUG("destruct");
+};
 
 void CXXInclusionCallback::InclusionDirective(clang::SourceLocation HashLoc, const clang::Token &IncludeTok,
                                               llvm::StringRef FileName, bool IsAngled,
@@ -26,6 +30,8 @@ void CXXInclusionCallback::InclusionDirective(clang::SourceLocation HashLoc, con
             fullSourceLoc.getPresumedLoc().getColumn(),
             fullSourceLoc.getPresumedLoc().getFilename(),
     };
+//    LOG_TRACE("from {}", inclusionProduct.loc.filename.u8string());
+//    LOG_TRACE("to {}", inclusionProduct.filename.u8string());
     consume(inclusionProduct);
 }
 
