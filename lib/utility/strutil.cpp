@@ -1,3 +1,22 @@
-//
-// Created by 董一龙 on 2023/2/15.
-//
+#include "utility/strutil.h"
+
+namespace tudumper::utility {
+    std::vector<std::string> split(std::string const& str, const std::regex& regex) {
+        return {std::sregex_token_iterator{str.begin(), str.end(), regex, -1}, std::sregex_token_iterator()};
+    }
+
+    std::vector<std::string> split(std::string const& s, std::string const& delimiter) {
+        size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+        std::string token;
+        std::vector<std::string> res;
+
+        while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+            token = s.substr(pos_start, pos_end - pos_start);
+            pos_start = pos_end + delim_len;
+            res.push_back(token);
+        }
+
+        res.push_back(s.substr(pos_start));
+        return res;
+    }
+}

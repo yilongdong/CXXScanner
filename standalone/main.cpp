@@ -5,6 +5,7 @@
 #include <clang/Tooling/CompilationDatabase.h>
 
 #include "utility/log.h"
+#include "utility/strutil.h"
 #include "action/FrontendAction.h"
 
 DEFINE_string(output_dir, "", "输出目录");
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]) {
             files = db->getAllFiles();
         }
         else {
-//            TODO
+            files = tudumper::utility::split(FLAGS_files, ",");
 //            files = split(FLAGS_files, ',');
         }
         clang::tooling::ClangTool tool(*db, files);
