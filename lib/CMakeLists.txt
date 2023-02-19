@@ -5,7 +5,7 @@ add_subdirectory(model)
 add_subdirectory(context)
 add_subdirectory(action)
 add_subdirectory(callback)
-
+add_subdirectory(reporter)
 
 add_library(TUDumperLib foo.cpp consumer.cpp)
 target_link_libraries(TUDumperLib
@@ -14,5 +14,6 @@ target_link_libraries(TUDumperLib
         tudumper::model
         tudumper::context
         tudumper::callback
-        tudumper::action)
+        tudumper::action
+        tudumper::reporter)
 

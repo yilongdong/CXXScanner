@@ -5,5 +5,6 @@ namespace tudumper::context {
     class CXXAnalysisContext {
     public:
         std::vector<model::CXXInclusion> inclusions;
+        std::filesystem::path path;
     };
 }
