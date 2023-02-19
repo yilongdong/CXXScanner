@@ -7,7 +7,7 @@ add_subdirectory(action)
 add_subdirectory(callback)
 
 
-add_library(TUDumperLib foo.cpp)
+add_library(TUDumperLib foo.cpp consumer.cpp)
 target_link_libraries(TUDumperLib
         PUBLIC
         tudumper::utility

@@ -2,6 +2,7 @@
 #include "utility/log.h"
 #include "action/FrontendAction.h"
 #include "callback/PP/CXXInclusionCallback.h"
+#include "consumer.h"
 
 using namespace tudumper::action;
 
@@ -13,7 +14,7 @@ FrontendAction::CreateASTConsumer(clang::CompilerInstance &CI, clang::StringRef 
         this->cxxAnalysisContext.inclusions.push_back(include);
     }));
 
-    return std::unique_ptr<clang::ASTConsumer>{};//std::make_unique<AnalysisConsumer>(CI, CXXContext.TU);
+    return std::make_unique<tudumper::ast_consumer::AnalysisConsumer>(CI);
 }
 
 void FrontendAction::EndSourceFileAction() {
