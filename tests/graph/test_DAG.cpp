@@ -12,7 +12,7 @@ struct Edge {
 };
 
 TEST(dag, dag_add_node) {
-    using graph_t = typename tudumper::graph::Digraph<std::string, Node, Edge>;
+    using graph_t = typename CXXScanner::graph::Digraph<std::string, Node, Edge>;
     using edge_t = typename graph_t::edge_t;
     using node_t = typename graph_t::node_t;
     graph_t digraph;

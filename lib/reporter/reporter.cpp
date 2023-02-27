@@ -3,7 +3,7 @@
 #include <fmt/format.h>
 #include <fstream>
 
-tudumper::reporter::Reporter::Reporter() {
+CXXScanner::reporter::Reporter::Reporter() {
     m_filterRegexes = {
             std::regex("^/Library/Developer/CommandLineTools/SDKs/.*"),
             std::regex(R"(^/usr/local/bin/\.\./include/c\+\+/.*)"),
@@ -18,11 +18,11 @@ tudumper::reporter::Reporter::Reporter() {
     };
 }
 
-tudumper::reporter::Reporter &
-tudumper::reporter::Reporter::loadInclusion(const tudumper::model::CXXInclusion &inclusion) {
-    InclusionID fromNodeId = std::to_string(std::filesystem::hash_value(inclusion.loc.filename));
+CXXScanner::reporter::Reporter &
+CXXScanner::reporter::Reporter::loadInclusion(const CXXScanner::model::CXXInclusion &inclusion) {
+    InclusionID fromNodeId = std::to_string(std::filesystem::hash_value(inclusion.loc.path));
     InclusionID toNodeId = std::to_string(std::filesystem::hash_value(inclusion.filename));
-    auto fromNodeData = std::make_unique<InclusionNodeData>(inclusion.loc.filename);
+    auto fromNodeData = std::make_unique<InclusionNodeData>(inclusion.loc.path);
     auto toNodeData = std::make_unique<InclusionNodeData>(inclusion.filename);
     InclusionNode fromNode{fromNodeId, std::move(fromNodeData) };
     InclusionNode toNode{toNodeId, std::move(toNodeData) };
@@ -33,18 +33,18 @@ tudumper::reporter::Reporter::loadInclusion(const tudumper::model::CXXInclusion 
     return *this;
 }
 
-tudumper::reporter::Reporter &tudumper::reporter::Reporter::setName(const std::string &name) {
+CXXScanner::reporter::Reporter &CXXScanner::reporter::Reporter::setName(const std::string &name) {
     m_name = name;
     return *this;
 }
 
-tudumper::reporter::Reporter &tudumper::reporter::Reporter::savePath(std::filesystem::path filename) {
+CXXScanner::reporter::Reporter &CXXScanner::reporter::Reporter::savePath(std::filesystem::path filename) {
     m_savePath = std::move(filename);
     return *this;
 }
 
-void tudumper::reporter::Reporter::doReport() {
-    std::set<tudumper::reporter::Reporter::InclusionID> remove_node_ids;
+void CXXScanner::reporter::Reporter::doReport() {
+    std::set<CXXScanner::reporter::Reporter::InclusionID> remove_node_ids;
     for(auto const& [id, node] : m_digraph.nodes_map()) {
         if (node.data == nullptr) continue;
         std::string filename = node.data->path.u8string();

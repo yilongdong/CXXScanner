@@ -7,7 +7,7 @@
 graph LR
     D[源文件] --> E(构建工具)
     E --> F[编译数据库] --> A[编译指令]
-    A --> B(tudumper)
+    A --> B(CXXScanner)
     C[配置文件] --> B
     B --> xx.tu.json
 ```
@@ -42,17 +42,21 @@ brew install ninja
 
 ### 编译
 ```shell
+
 ./build.sh
 ln -s /usr/local/lib/clang/  ./install/lib/clang
-./install/bin/tudumper --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
+./install/bin/CXXScanner --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
 ```
 
 ## Usage
 
 ```shell
-./install/bin/tudumper --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
+./install/bin/CXXScanner --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
 ```
 
+https://github.com/sourcegraph/lsif-clang
+If you get missing header warnings (possible due to divergence between lsif-clang and Apple Clang), use an extra flag:
+--extra-arg="-resource-dir=$(clang -print-resource-dir)" compile_commands.json
 ## API
 
 ## Maintainers

@@ -3,7 +3,7 @@
 #include <string>
 #include <regex>
 
-namespace tudumper::utility {
+namespace CXXScanner::utility {
 
     /*!
      * 分割字符串

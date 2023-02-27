@@ -1,10 +1,9 @@
 #pragma once
 #include <clang/Frontend/FrontendActions.h>
 #include <clang/Tooling/Tooling.h>
-
 #include "context/CXXAnalysisContext.h"
 
-namespace tudumper::action {
+namespace CXXScanner::action {
     class FrontendAction : public clang::ASTFrontendAction {
     public:
         FrontendAction() = default;
@@ -17,9 +16,6 @@ namespace tudumper::action {
 
     class FrontendActionFactory : public clang::tooling::FrontendActionFactory {
     public:
-        std::unique_ptr<clang::FrontendAction> create() override {
-            LOG_DEBUG("make frontend action");
-            return std::make_unique<::tudumper::action::FrontendAction>();
-        }
+        std::unique_ptr<clang::FrontendAction> create() override;
     };
 }

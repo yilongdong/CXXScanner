@@ -1,6 +1,6 @@
 #include <memory>
 
-namespace tudumper::utility {
+namespace CXXScanner::utility {
     /*!
      * 懒加载的单例基类模板
      * LazySingleton<T> 中提供了 struct token 的方法来拒绝使用者直接构造一个类
@@ -12,7 +12,9 @@ namespace tudumper::utility {
         static T &instance();
 
         LazySingleton(const LazySingleton &) = delete;
-        LazySingleton &operator=(const LazySingleton) = delete;
+        LazySingleton(LazySingleton &&) = delete;
+        LazySingleton &operator=(const LazySingleton &) = delete;
+        LazySingleton &operator=(LazySingleton &&) = delete;
 
     protected:
         struct token {};

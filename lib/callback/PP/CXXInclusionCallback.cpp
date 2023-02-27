@@ -1,10 +1,11 @@
 #include "utility/log.h"
 #include "callback/PP/CXXInclusionCallback.h"
 
-using namespace tudumper::callback;
+#include <utility>
 
-CXXInclusionCallback::CXXInclusionCallback(clang::Preprocessor &PP, ConsumerFunction consume)
-    :PP{PP}, consume{std::move(consume)} {
+using namespace CXXScanner::callback;
+
+CXXInclusionCallback::CXXInclusionCallback(clang::Preprocessor &PP) : PP{PP} {
     LOG_DEBUG("construct");
 }
 
@@ -23,16 +24,23 @@ void CXXInclusionCallback::InclusionDirective(clang::SourceLocation HashLoc, con
     if (fullSourceLoc.isInvalid() || fullSourceLoc.getPresumedLoc().isInvalid()) {
         return;
     }
-    tudumper::model::CXXInclusion inclusionProduct;
+    CXXScanner::model::CXXInclusion inclusionProduct;
     inclusionProduct.filename = File->getName().str();
     inclusionProduct.loc = model::SourceLocation{
             fullSourceLoc.getPresumedLoc().getLine(),
             fullSourceLoc.getPresumedLoc().getColumn(),
             fullSourceLoc.getPresumedLoc().getFilename(),
     };
-//    LOG_TRACE("from {}", inclusionProduct.loc.filename.u8string());
-//    LOG_TRACE("to {}", inclusionProduct.filename.u8string());
+    if (filter(inclusionProduct)) {
+        return;
+    }
     consume(inclusionProduct);
 }
 
+void CXXInclusionCallback::setFilterCallback(std::function<bool(const ProductType &)> filterCB) {
+    this->filter = std::move(filterCB);
+}
 
+void CXXInclusionCallback::setConsumeCallback(std::function<void(const ProductType &)> consumeCB) {
+    this->consume = std::move(consumeCB);
+}

@@ -5,7 +5,7 @@
 #include "model/CXXInclusion.h"
 #include "graph/Digraph.hpp"
 #include <regex>
-namespace tudumper::reporter {
+namespace CXXScanner::reporter {
     class Reporter {
     private:
 
@@ -14,7 +14,7 @@ namespace tudumper::reporter {
             std::filesystem::path path;
         };
 
-        using InclusionGraph = tudumper::graph::Digraph<std::string, InclusionNodeData, tudumper::graph::Empty>;
+        using InclusionGraph = CXXScanner::graph::Digraph<std::string, InclusionNodeData, CXXScanner::graph::Empty>;
         using InclusionNode = InclusionGraph::node_t;
         using InclusionEdge = InclusionGraph::edge_t;
         using InclusionID = InclusionGraph::ID;
@@ -26,12 +26,12 @@ namespace tudumper::reporter {
     public:
         Reporter();
         template<typename Iter> Reporter& loadInclusions(Iter first, Iter last) {
-            std::for_each(first, last, [this](tudumper::model::CXXInclusion const& inclusion) {
+            std::for_each(first, last, [this](CXXScanner::model::CXXInclusion const& inclusion) {
                 this->loadInclusion(inclusion);
             });
             return *this;
         }
-        Reporter& loadInclusion(tudumper::model::CXXInclusion const& inclusion);
+        Reporter& loadInclusion(CXXScanner::model::CXXInclusion const& inclusion);
         Reporter& setName(std::string const& name);
         Reporter& savePath(std::filesystem::path filename);
 

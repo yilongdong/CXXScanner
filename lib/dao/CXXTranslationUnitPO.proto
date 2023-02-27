@@ -1,0 +1,76 @@
+syntax = "proto3";
+package CXXScanner.dao.po;
+
+message Location {
+  optional uint32 line = 1;
+  optional uint32 column = 2;
+  optional string path = 4;
+}
+
+message CXXType {
+  optional string name = 1;
+}
+
+message CXXVariable {
+  optional CXXType type = 1;
+  optional string name = 2;
+}
+
+message CXXParam {
+  optional CXXType type = 1;
+  optional string name = 2;
+  optional string default_value = 3;
+}
+
+message CXXFunction {
+  optional CXXType return_type = 1;
+  optional string name = 2;
+  repeated CXXParam params = 3;
+}
+
+enum CXXAccess {
+  AC_UNKNOWN = 0;
+  AC_PUBLIC = 1;
+  AC_PRIVATE = 2;
+  AC_PROTECTED = 3;
+}
+
+message CXXMethod {
+  optional CXXType return_type = 1;
+  optional string name = 2;
+  repeated CXXParam params = 3;
+  optional CXXAccess access = 4;
+}
+
+message CXXField {
+  optional CXXType type = 1;
+  optional string name = 2;
+  optional CXXAccess access = 3;
+}
+
+message CXXBase {
+  optional CXXType type = 1;
+  optional CXXAccess access = 2;
+  optional bool is_virtual = 3;
+}
+
+message CXXClass {
+  string name = 1;
+  repeated CXXField fields = 2;
+  repeated CXXMethod methods = 3;
+  repeated CXXBase bases = 4;
+  Location location = 5;
+}
+
+message CXXInclusion {
+  optional string path = 1;
+  optional Location location = 2;
+}
+
+message CXXTranslationUnit {
+  string _id = 1;
+  string path = 2;
+  repeated CXXClass classes = 3;
+  repeated CXXInclusion inclusions = 4;
+  string version = 5;
+}

@@ -30,13 +30,13 @@ int main(int argc, char* argv[]) {
             files = db->getAllFiles();
         }
         else {
-            files = tudumper::utility::split(FLAGS_files, ",");
+            files = CXXScanner::utility::split(FLAGS_files, ",");
         }
         std::for_each(files.begin(), files.end(), [](std::string const& file) {
             LOG_INFO("file = {}", file);
         });
         clang::tooling::ClangTool tool(*db, files);
-        tudumper::action::FrontendActionFactory factory;
+        CXXScanner::action::FrontendActionFactory factory;
         tool.run(&factory);
     } else {
         LOG_ERROR("Fail to load compile database from {} with error msg {}", compdbPath.parent_path().u8string(), errorMsg);

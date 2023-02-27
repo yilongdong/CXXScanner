@@ -1,11 +1,16 @@
 #pragma once
 #include "model/SourceLoaction.h"
 
-namespace tudumper::model {
+namespace CXXScanner::model {
     class Element {
     public:
+        using id_t = size_t;
+        Element() = default;
         virtual ~Element() = default;
-        [[nodiscard]] virtual std::string dump() const = 0;
+
+        [[nodiscard]] virtual size_t id() const {
+            return loc.id();
+        }
         SourceLocation loc;
     };
 }

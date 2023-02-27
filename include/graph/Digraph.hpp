@@ -8,7 +8,7 @@
 #include <utility>
 #include "utility/log.h"
 
-namespace tudumper::graph {
+namespace CXXScanner::graph {
     struct Empty {};
     template <typename id_t, typename node_data_type, typename edge_data_type>
     class Digraph {

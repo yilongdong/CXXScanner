@@ -1,6 +1,6 @@
 #include "model/CXXInclusion.h"
 
 
-std::string tudumper::model::CXXInclusion::dump() const {
-    return filename.u8string() + " in " + loc.filename.u8string();
+std::string CXXScanner::model::CXXInclusion::dump() const {
+    return filename.u8string() + " in " + loc.path.u8string();
 }

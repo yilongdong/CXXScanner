@@ -5,7 +5,7 @@
 #include <iostream>
 #include <unordered_map>
 
-tudumper::utility::MMLogger::MMLogger(tudumper::utility::LazySingleton<MMLogger>::token) {
+CXXScanner::utility::MMLogger::MMLogger(CXXScanner::utility::LazySingleton<MMLogger>::token) {
     try {
         const std::string loggerName = std::string("test");
         if (m_console) {
@@ -27,7 +27,7 @@ tudumper::utility::MMLogger::MMLogger(tudumper::utility::LazySingleton<MMLogger>
     }
 }
 
-void tudumper::utility::MMLogger::setLogLevel(std::string const& logLevel) {
+void CXXScanner::utility::MMLogger::setLogLevel(std::string const& logLevel) {
     m_level = logLevel;
     static std::unordered_map<std::string, decltype(spdlog::level::trace)> levelConvertMap {
        { "trace", spdlog::level::trace },
@@ -47,7 +47,7 @@ void tudumper::utility::MMLogger::setLogLevel(std::string const& logLevel) {
     }
 }
 
-std::shared_ptr<spdlog::logger> tudumper::utility::MMLogger::getLogger() {
+std::shared_ptr<spdlog::logger> CXXScanner::utility::MMLogger::getLogger() {
     return m_logger;
 }
 

@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.23)
 # 把系统编译器给整坏了，可能是因为没有编译compile-rt之类的，所以这里指定使用brew安装的clang。
 set(CMAKE_C_COMPILER /opt/homebrew/opt/llvm/bin/clang)
 set(CMAKE_CXX_COMPILER /opt/homebrew/opt/llvm/bin/clang++)
-
-project(tudumper)
+#set(CMAKE_C_COMPILER /usr/local/bin/clang)
+#set(CMAKE_CXX_COMPILER /usr/local/bin/clang++)
+project(CXXScanner)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -37,10 +38,8 @@ add_subdirectory(lib)
 add_subdirectory(standalone)
 add_subdirectory(tests)
 
-
-
 ## 安装
-install(TARGETS tudumper DESTINATION bin)
+install(TARGETS CXXScanner DESTINATION bin)
 install(TARGETS TUDumperLib LIBRARY DESTINATION lib)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
-install(FILES tudumper-conf.toml DESTINATION etc)
+install(FILES CXXScanner-conf.toml DESTINATION etc)

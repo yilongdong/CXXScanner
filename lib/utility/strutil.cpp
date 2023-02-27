@@ -1,6 +1,6 @@
 #include "utility/strutil.h"
 
-namespace tudumper::utility {
+namespace CXXScanner::utility {
     std::vector<std::string> split(std::string const& str, const std::regex& regex) {
         return {std::sregex_token_iterator{str.begin(), str.end(), regex, -1}, std::sregex_token_iterator()};
     }
