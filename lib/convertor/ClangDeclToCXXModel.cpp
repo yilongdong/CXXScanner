@@ -43,6 +43,11 @@ bool CXXScanner::convertor::ClangDeclToCXXModelConvertor::getMethod(const clang:
             methodModel.params.push_back(param);
         }
     }
+    methodModel.is_virtual = methodDecl.isVirtual();
+    methodModel.is_deleted = methodDecl.isDeleted();
+    methodModel.is_pure = methodDecl.isPure();
+    methodModel.is_default = methodDecl.isDeleted();
+    methodModel.is_static = methodDecl.isStatic();
     return true;
 }
 

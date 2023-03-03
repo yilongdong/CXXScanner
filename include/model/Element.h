@@ -1,6 +1,6 @@
 #pragma once
 #include "model/SourceLoaction.h"
-
+#include <optional>
 namespace CXXScanner::model {
     class Element {
     public:
@@ -8,9 +8,16 @@ namespace CXXScanner::model {
         Element() = default;
         virtual ~Element() = default;
 
-        [[nodiscard]] virtual size_t id() const {
-            return loc.id();
+        [[nodiscard]] id_t getId() const {
+            if (has_stored) return stored_id;
+            stored_id = id();
+            has_stored = true;
+            return stored_id;
         }
-        SourceLocation loc;
+    private:
+        [[nodiscard]] virtual id_t id() const = 0;
+        mutable id_t stored_id{0};
+        mutable bool has_stored{false};
+
     };
 }

@@ -8,7 +8,9 @@ message Location {
 }
 
 message CXXType {
-  optional string name = 1;
+  optional uint32 id = 1;
+  optional string name = 2;
+  repeated CXXType template_types = 3;
 }
 
 message CXXVariable {
@@ -65,12 +67,38 @@ message CXXClass {
 message CXXInclusion {
   optional string path = 1;
   optional Location location = 2;
+message CXXClassRelation {
+  enum RelationKind {
+    REL_BASE = 0; // 基类
+    REL_VBAE = 1; // 虚基类
+    REL_COMP = 2; // 组合关系
+    REL_ASSOC = 3; // 关联关系
+  }
+  optional string kind = 1;
+  optional uint32 from = 2;
+  optional uint32 to = 3;
 }
 
+message CXXMethodRelation {
+  enum RelationKind {
+    REL_CALL = 0;
+  }
+  optional RelationKind kind = 1;
+  optional uint32 from = 2;
+  optional uint32 to = 3;
+}
 message CXXTranslationUnit {
-  string _id = 1;
-  string path = 2;
+  optional uint32 id = 1;
+  optional string path = 2;
   repeated CXXClass classes = 3;
   repeated CXXInclusion inclusions = 4;
   string version = 5;
+  repeated CXXClassRelation cxx_class_relations = 6;
+  repeated CXXMethodRelation cxx_method_relations = 7;
+}
+message ProjectDumpFormat {
+  optional uint32 id = 1;
+  optional string name = 2;
+  optional string timestamp = 3;
+  repeated CXXTranslationUnit cxx_translation_unit_list = 4;
 }

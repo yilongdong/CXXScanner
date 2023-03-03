@@ -6,10 +6,13 @@
 ```mermaid
 graph LR
     D[源文件] --> E(构建工具)
-    E --> F[编译数据库] --> A[编译指令]
-    A --> B(CXXScanner)
-    C[配置文件] --> B
-    B --> xx.tu.json
+    E --> F[编译数据库]
+    F --> B(CXXScanner)
+    D --> B
+    B --> C[CXXTUModel]
+    C --> G[protobufModel]
+    G --> H[mongoDB]
+    H -->|graphql| I[web]
 ```
 TODO: Fill out this long description.
 

@@ -6,20 +6,24 @@
 
 
 namespace CXXScanner::model {
-    class CXXTranslationUnit {
+    class CXXTranslationUnit : public model::Element {
     public:
         std::vector<model::CXXInclusion> inclusions;
         std::set<model::CXXClass, model::CXXClass::Less> classes;
         std::filesystem::path path;
-        [[nodiscard]] std::string id() const {
-            size_t inclusionsHash = 0;
+
+    private:
+        [[nodiscard]] Element::id_t id() const override {
+            size_t inclusions_hash = 0;
             for (auto const& inclusion : inclusions) {
-                inclusionsHash = inclusionsHash ^ inclusion.id();
+                inclusions_hash = inclusions_hash ^ inclusion.getId();
             }
             std::string prefix_path = path.parent_path().u8string();
-            size_t prefixHash = std::hash<std::string>{}(prefix_path);
+            size_t prefix_hash = std::hash<std::string>{}(prefix_path);
             std::string filename = path.filename();
-            return fmt::format("{}@prefixHash={}@inclusionsHash={}", filename, prefixHash, inclusionsHash);
+            std::string id_label = fmt::format("{}@prefixHash={}@inclusionsHash={}",
+                                               filename, prefix_hash, inclusions_hash);
+            return std::hash<std::string>{}(id_label);
         };
     };
 }

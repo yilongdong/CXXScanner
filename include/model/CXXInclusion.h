@@ -10,5 +10,11 @@ namespace CXXScanner::model {
         ~CXXInclusion() override = default;
         [[nodiscard]] std::string dump() const;
         std::filesystem::path filename;
+        SourceLocation loc;
+
+    private:
+        [[nodiscard]] Element::id_t id() const override {
+            return std::hash<std::string>{}(dump());
+        }
     };
 }

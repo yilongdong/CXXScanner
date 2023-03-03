@@ -68,12 +68,14 @@ bool Generator::generate(const clang::CXXRecordDecl &recordDecl, CXXScanner::mod
     for (auto const& baseSpecifier : recordDecl.bases()) {
         CXXScanner::model::CXXBase baseModel;
         convertor.getBase(baseSpecifier, baseModel);
+        baseModel.is_virtual = false;
         cxxClassModel.bases.push_back(baseModel);
     }
 
     for (auto const& baseSpecifier : recordDecl.vbases()) {
         CXXScanner::model::CXXBase baseModel;
         convertor.getBase(baseSpecifier, baseModel);
+        baseModel.is_virtual = true;
         cxxClassModel.bases.push_back(baseModel);
     }
     return true;
