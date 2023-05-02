@@ -1,0 +1,1 @@
+target_sources(callback PRIVATE CLOCPlugin.cpp CLOCPlugin.h)

@@ -1,0 +1,45 @@
+syntax = "proto3";
+package beacon.model;
+
+import "Tu.proto";
+
+// brew install cloc
+message ClocInfo {
+  optional string language = 1;
+  optional uint32 blank = 2;
+  optional uint32 comment = 3;
+  optional uint32 code = 4;
+}
+
+// brew install git-extras
+message GitInfo {
+  optional string commitId = 1;
+  optional string date = 2;
+}
+
+// pip install lizard
+message CycloInfo {
+  optional string functionName = 1;
+  optional uint32 lineOfCode = 2;
+  optional uint32 cyclomaticComplexity = 3;
+  optional uint32 tokenCount = 4;
+  optional uint32 parameterCount = 5;
+}
+
+message InclusionInfo {
+  optional uint32 line = 1;
+  optional uint32 column = 2;
+  optional string path = 3;
+}
+
+message FileInfo {
+  optional string id = 1;
+  optional string filename = 2;
+  optional string directory = 3;
+  optional string path = 4;
+  repeated GitInfo gitInfo = 5;
+  optional ClocInfo clocInfo = 6;
+  repeated CycloInfo cycloInfoList = 7;
+  repeated InclusionInfo inclusions = 8;
+  optional TUInfo tuInfo = 9;
+}

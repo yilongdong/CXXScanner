@@ -1,0 +1,1 @@
+target_sources(callback PRIVATE CYCLOPlugin.cpp CYCLOPlugin.h)

@@ -24,17 +24,16 @@ void CXXInclusionCallback::InclusionDirective(clang::SourceLocation HashLoc, con
     if (fullSourceLoc.isInvalid() || fullSourceLoc.getPresumedLoc().isInvalid()) {
         return;
     }
-    CXXScanner::model::CXXInclusion inclusionProduct;
-    inclusionProduct.filename = File->getName().str();
-    inclusionProduct.loc = model::SourceLocation{
-            fullSourceLoc.getPresumedLoc().getLine(),
-            fullSourceLoc.getPresumedLoc().getColumn(),
-            fullSourceLoc.getPresumedLoc().getFilename(),
-    };
-    if (filter(inclusionProduct)) {
+    beacon::model::CXXInclusion cxxInclusion;
+    cxxInclusion.set_path(File ? File->getName().str() : "");
+    cxxInclusion.mutable_location()->set_path(fullSourceLoc.getPresumedLoc().getFilename());
+    cxxInclusion.mutable_location()->set_line(fullSourceLoc.getPresumedLoc().getLine());
+    cxxInclusion.mutable_location()->set_column(fullSourceLoc.getPresumedLoc().getColumn());
+
+    if (filter(cxxInclusion)) {
         return;
     }
-    consume(inclusionProduct);
+    consume(cxxInclusion);
 }
 
 void CXXInclusionCallback::setFilterCallback(std::function<bool(const ProductType &)> filterCB) {

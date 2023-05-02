@@ -1,0 +1,14 @@
+syntax = "proto3";
+package beacon.model;
+import "Code.proto";
+
+message CallGraph {
+  repeated CXXFunctionRelation relations = 1;
+}
+
+message TUInfo {
+  optional string id = 1;
+  repeated CXXClass classList = 2;
+  repeated CXXFunction functionList = 3;
+  optional CallGraph callGraph = 4;
+}

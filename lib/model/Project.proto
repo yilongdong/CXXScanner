@@ -1,0 +1,11 @@
+syntax = "proto3";
+package beacon.model;
+
+import "File.proto";
+
+message ProjectDumpFormat {
+  optional string id = 1;
+  optional string name = 2;
+  optional string date = 3;
+  repeated FileInfo fileInfoList = 4;
+}

@@ -1,1 +1,1 @@
-target_sources(callback PRIVATE CXXRecordCallback.cpp)
+target_sources(callback PRIVATE CXXRecordCallback.cpp CXXRecordCallback.h )

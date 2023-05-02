@@ -1,0 +1,116 @@
+syntax = "proto3";
+package beacon.model;
+
+message CXXClass {
+  optional string id = 1;
+  optional string name = 2;
+  repeated CXXField fields = 3;
+  repeated CXXFunction methods = 4;
+  repeated CXXBase bases = 5;
+  repeated CXXClassRelation relations = 6;
+  optional Location location = 7;
+  optional string namespace = 8;
+  repeated TypeAlias typeAliases = 9;
+  repeated Enum enums = 10;
+  repeated Constant constants = 11;
+  optional bool isStruct = 12;
+}
+
+message CXXFunction {
+  optional CXXType returnType = 1;
+  optional string name = 2;
+  repeated CXXParam params = 3;
+  optional CXXAccess access = 4;
+  repeated CXXFunctionRelation relations = 5;
+  optional string className = 6;
+  optional bool isVirtual = 7;
+  optional bool isPureVirtual = 8;
+  optional bool isExplicit = 9;
+  optional bool isTemplate = 10;
+  optional bool isConstructor = 11;
+  optional bool isDestructor = 12;
+  optional bool isStatic = 13;
+  optional string fullName = 14;
+}
+
+message Location {
+  optional uint32 line = 1;
+  optional uint32 column = 2;
+  optional string path = 3;
+}
+
+message CXXType {
+  optional string id = 1;
+  optional string name = 2;
+  repeated string associatedTypes = 3; // 关联的类型
+}
+
+message CXXParam {
+  optional CXXType type = 1;
+  optional string name = 2;
+  optional string defaultValue = 3;
+}
+
+message CXXAccess {
+  string name = 1;
+  string symbol = 2;
+}
+
+message CXXField {
+  optional CXXType type = 1;
+  optional string name = 2;
+  optional CXXAccess access = 3;
+}
+
+message CXXBase {
+  optional CXXType type = 1;
+  optional CXXAccess access = 2;
+  optional bool is_virtual = 3;
+}
+
+message TypeAlias {
+  string name = 1;
+  CXXType type = 2;
+}
+
+message Enum {
+  string name = 1;
+  repeated EnumConstant constants = 2;
+}
+
+message EnumConstant {
+  string name = 1;
+  int32 value = 2;
+}
+
+message Constant {
+  string name = 1;
+  CXXType type = 2;
+  string value = 3;
+}
+
+message CXXInclusion {
+  optional string path = 1;
+  optional Location location = 2;
+}
+
+message CXXClassRelation {
+  enum RelationKind {
+    REL_BASE = 0; // 基类
+    REL_VBASE = 1; // 虚基类
+    REL_COMP = 2; // 组合关系
+    REL_ASSOC = 3; // 关联关系
+  }
+  optional RelationKind kind = 1;
+  optional string from = 2;
+  optional string to = 3;
+}
+
+message CXXFunctionRelation {
+  enum RelationKind {
+    REL_CALL = 0;
+  }
+  optional RelationKind kind = 1;
+  optional uint32 from = 2;
+  optional uint32 to = 3;
+}

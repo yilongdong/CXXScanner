@@ -1,2 +1,2 @@
-target_sources(callback PRIVATE CXXInclusionCallback.cpp)
+target_sources(callback PRIVATE CXXInclusionCallback.cpp CXXInclusionCallback.h)
 

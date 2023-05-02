@@ -1,5 +1,6 @@
 #include "context/CXXAnalysisContext.h"
 
+
 bool CXXScanner::context::CXXAnalysisContext::isSkipHeader(std::filesystem::path const& path) {
     static std::vector<std::regex> regexs = {
         std::regex("^/Library/Developer/CommandLineTools/SDKs/.*"),

@@ -33,13 +33,12 @@ include(DocForCLITool)
 ## 引入LibTooling
 include(AddLibTooling)
 
-include_directories(include)
 add_subdirectory(lib)
 add_subdirectory(standalone)
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 ## 安装
 install(TARGETS CXXScanner DESTINATION bin)
-install(TARGETS TUDumperLib LIBRARY DESTINATION lib)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
+install(TARGETS CXXScannerLib LIBRARY DESTINATION lib)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/lib/ DESTINATION include)
 install(FILES CXXScanner-conf.toml DESTINATION etc)

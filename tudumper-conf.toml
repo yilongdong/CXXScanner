@@ -1,0 +1,5 @@
+[db.mongodb]
+    "username"="xxxxxxxxx"
+    "password"="xxxxxxxxx"
+    "ip"="xxx.xxx.xxx.xxx"
+    "port"="27017"

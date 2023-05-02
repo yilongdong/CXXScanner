@@ -6,15 +6,19 @@ CXXScanner::ast_consumer::AnalysisConsumer::AnalysisConsumer(clang::CompilerInst
             clang::ast_matchers::cxxRecordDecl(clang::ast_matchers::isClass(), clang::ast_matchers::isDefinition()).bind("class");
     static clang::ast_matchers::DeclarationMatcher const TUMatcher = clang::ast_matchers::translationUnitDecl().bind("TU");
 
-    cxxRecordCallback.setConsumeCallback([this](auto const& clsModel) {
-        this->context.translationUnit.classes.insert(clsModel);
+    cxxRecordCallback.setConsumeCallback([this](auto& clsModel) {
+        // auto& tuFileModel = this->context.filesModelMap[this->context.sourceFilePath];
+        auto& fileModel = this->context.filesModelMap[clsModel.location().path()];
+        fileModel.mutable_tuinfo()->mutable_classlist()->Add(std::move(clsModel));
     });
 
     cxxRecordCallback.setFilterCallback([this](auto const& clsModel)->bool {
         using CXXContext = CXXScanner::context::CXXAnalysisContext;
-        return CXXContext::isSkipClassName(clsModel.name) ||
-               CXXContext::isSkipHeader(clsModel.loc.path) ||
-               clsModel.name.empty() || clsModel.loc.path.empty();
+        auto& fileModel = this->context.filesModelMap[clsModel.location().path()];
+
+        return clsModel.name().empty() || clsModel.location().path().empty() ||
+               CXXContext::isSkipClassName(clsModel.name()) ||
+               CXXContext::isSkipHeader(clsModel.location().path());
     });
 
     matchFinder.addMatcher(recordMatcher, &cxxRecordCallback);

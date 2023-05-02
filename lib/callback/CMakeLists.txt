@@ -1,6 +1,9 @@
-add_library(callback)
+add_library(callback "" Git/GitPlugin.cpp Git/GitPlugin.h)
 add_library(CXXScanner::callback ALIAS callback)
-target_link_libraries(callback PUBLIC ${ClangLLVMLibs} CXXScanner::utility)
 
 add_subdirectory(PP)
 add_subdirectory(AST)
+add_subdirectory(CLOC)
+add_subdirectory(CYCLO)
+
+target_link_libraries(callback PUBLIC CXXScanner::utility CXXScanner::model)

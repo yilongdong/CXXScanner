@@ -1,4 +1,3 @@
-#include "foo.h"
 #include "utility/log.h"
 #include <iostream>
 
