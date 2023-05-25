@@ -1,5 +1,9 @@
-[db.mongodb]
-    "username"="xxxxxxxxx"
-    "password"="xxxxxxxxx"
-    "ip"="xxx.xxx.xxx.xxx"
-    "port"="27017"
+[input]
+    "build_directory"="/Users/xxx/projects/Clion/CXXScanner/build/debug"
+    "source_file_list"=[
+        "/Users/xxx/projects/Clion/CXXScanner/lib/callback/AST/CXXCallGraphCallback.cpp",
+        "/Users/xxx/projects/Clion/CXXScanner/lib/callback/AST/CXXCallGraphCallback.h"
+    ]
+
+[output]
+    "result_directory"="/Users/xxx/projects/Clion/CXXScanner/result"
