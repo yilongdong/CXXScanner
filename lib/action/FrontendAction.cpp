@@ -50,9 +50,10 @@ FrontendAction::CreateASTConsumer(clang::CompilerInstance &CI, clang::StringRef 
 }
 
 void FrontendAction::EndSourceFileAction() {
-    bool withCloc = false, withGit = false, withLizard = false;
+    bool withCloc = true, withGit = true, withLizard = true;
     std::vector<std::string> filesList;
     for (auto const& [path, _] : this->cxxAnalysisContext.filesModelMap) {
+        if(path.empty()) continue;
         filesList.push_back(path);
     }
     if(withCloc) {
@@ -77,8 +78,8 @@ void FrontendAction::CLOCScan(const std::vector<std::string> &filesList) {
         fileModel.mutable_clocinfo()->set_code(result.code);
         fileModel.mutable_clocinfo()->set_comment(result.comment);
 
-        LOG_INFO("[cloc] file:{} code:{} comment:{} blank:{} language:{}",
-                 result.path, result.code, result.comment, result.blank, result.language);
+//        LOG_INFO("[cloc] file:{} code:{} comment:{} blank:{} language:{}",
+//                 result.path, result.code, result.comment, result.blank, result.language);
     });
 }
 
@@ -93,10 +94,10 @@ void FrontendAction::CYCLOScan(const std::vector<std::string> &filesList) {
             cycloInfo->set_lineofcode(funcCycloInfo.lineOfCode);
             cycloInfo->set_parametercount(funcCycloInfo.parameterCount);
             cycloInfo->set_tokencount(funcCycloInfo.tokenCount);
-            LOG_DEBUG("[cyclo] func = {} loc = {} cyclo = {}", funcCycloInfo.functionName, funcCycloInfo.lineOfCode,
-                      funcCycloInfo.cyclomaticComplexity);
+//            LOG_DEBUG("[cyclo] func = {} loc = {} cyclo = {}", funcCycloInfo.functionName, funcCycloInfo.lineOfCode,
+//                      funcCycloInfo.cyclomaticComplexity);
         }
-        LOG_DEBUG("[cyclo] path = {} func count = {}", result.path, result.functionInfoList.size());
+//        LOG_DEBUG("[cyclo] path = {} func count = {}", result.path, result.functionInfoList.size());
     });
 }
 
@@ -107,7 +108,7 @@ void FrontendAction::GitScan(const std::vector<std::string> &filesList) {
             auto gitInfo = fileModel.add_gitinfo();
             gitInfo->set_date(gitInfoModel.date);
             gitInfo->set_commitid(gitInfoModel.commitId);
-            LOG_DEBUG("[git] commit id = {} date = {}", gitInfoModel.commitId, gitInfoModel.date);
+//            LOG_DEBUG("[git] commit id = {} date = {}", gitInfoModel.commitId, gitInfoModel.date);
         }
     });
 }
@@ -118,7 +119,7 @@ std::unique_ptr<clang::FrontendAction> FrontendActionFactory::create() {
     LOG_DEBUG("make frontend action");
     return std::make_unique<CXXScanner::action::FrontendAction>([this](context::CXXAnalysisContext& context) {
         for (auto& [path, fileInfo] : context.filesModelMap) {
-            LOG_INFO("tu context fileModelMap size = {}", context.filesModelMap.size());
+//            LOG_INFO("tu context fileModelMap size = {}", context.filesModelMap.size());
             this->cxxCrossTuContext.addFileInfo(std::move(fileInfo));
         }
         LOG_DEBUG("add new tu");
@@ -129,6 +130,7 @@ FrontendActionFactory::FrontendActionFactory(const CXXScanner::config::ConfigPro
     : configProvider(configProvider) {}
 
 FrontendActionFactory::~FrontendActionFactory() {
+    LOG_INFO("save dump file");
     cxxCrossTuContext.dump(configProvider.outputConfig.result_directory + "/test.dump.json");
-    LOG_DEBUG("save dump file");
+    LOG_INFO("finish dump file");
 }

@@ -1,6 +1,7 @@
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include "callback/AST/CXXRecordCallback.h"
+#include "callback/AST/CXXCallGraphCallback.h"
 #include "context/CXXAnalysisContext.h"
 
 namespace CXXScanner::ast_consumer {
@@ -14,6 +15,7 @@ namespace CXXScanner::ast_consumer {
     private:
         clang::ast_matchers::MatchFinder matchFinder;
         CXXScanner::callback::CXXRecordCallback cxxRecordCallback;
+        CXXScanner::callback::CXXCallGraphCallback cxxCallGraphCallback;
         CXXScanner::context::CXXAnalysisContext& context;
     };
 }

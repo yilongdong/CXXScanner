@@ -1,7 +1,8 @@
 #include "ast_consumer/consumer.h"
+#include "utility/log.h"
 
 CXXScanner::ast_consumer::AnalysisConsumer::AnalysisConsumer(clang::CompilerInstance &CI, CXXScanner::context::CXXAnalysisContext& context)
-    : cxxRecordCallback{CI}, context{context} {
+    : cxxRecordCallback{CI}, cxxCallGraphCallback{CI}, context{context} {
     static clang::ast_matchers::DeclarationMatcher const recordMatcher =
             clang::ast_matchers::cxxRecordDecl(clang::ast_matchers::isClass(), clang::ast_matchers::isDefinition()).bind("class");
     static clang::ast_matchers::DeclarationMatcher const TUMatcher = clang::ast_matchers::translationUnitDecl().bind("TU");
@@ -10,18 +11,26 @@ CXXScanner::ast_consumer::AnalysisConsumer::AnalysisConsumer(clang::CompilerInst
         // auto& tuFileModel = this->context.filesModelMap[this->context.sourceFilePath];
         auto& fileModel = this->context.filesModelMap[clsModel.location().path()];
         fileModel.mutable_tuinfo()->mutable_classlist()->Add(std::move(clsModel));
-    });
-
-    cxxRecordCallback.setFilterCallback([this](auto const& clsModel)->bool {
+    }).setFilterCallback([this](auto const& clsModel)->bool {
         using CXXContext = CXXScanner::context::CXXAnalysisContext;
         auto& fileModel = this->context.filesModelMap[clsModel.location().path()];
-
-        return clsModel.name().empty() || clsModel.location().path().empty() ||
+        auto hasExist = std::any_of(fileModel.tuinfo().classlist().begin(), fileModel.tuinfo().classlist().end(),
+                     [&clsModel](beacon::model::CXXClass const& clsMsg) {
+           return  clsMsg.id() == clsModel.id();
+        });
+        return hasExist || clsModel.name().empty() || clsModel.location().path().empty() ||
                CXXContext::isSkipClassName(clsModel.name()) ||
                CXXContext::isSkipHeader(clsModel.location().path());
     });
-
     matchFinder.addMatcher(recordMatcher, &cxxRecordCallback);
+
+    cxxCallGraphCallback.setConsumeCallback([this](std::string const& path, std::unique_ptr<beacon::model::CallGraph> callGraphMsg) {
+        auto& fileModel = this->context.filesModelMap[path];
+        LOG_INFO("[callgraph] path={}, size={}", path, callGraphMsg.get()->relations_size());
+        fileModel.mutable_tuinfo()->set_allocated_callgraph(callGraphMsg.release());
+
+    });
+    matchFinder.addMatcher(TUMatcher, &cxxCallGraphCallback);
 }
 
 CXXScanner::ast_consumer::AnalysisConsumer::~AnalysisConsumer() = default;

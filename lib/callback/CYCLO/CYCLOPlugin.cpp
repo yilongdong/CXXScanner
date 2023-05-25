@@ -56,6 +56,13 @@ namespace CXXScanner::callback {
         std::string rowStr;
         std::map<std::string, Result> cycloResultMap;
         while(std::getline(sstream, rowStr)) {
+            if(rowStr.back() == '\\') {
+                std::string tmpStr;
+                std::getline(sstream, tmpStr);
+                rowStr.pop_back();
+                rowStr += tmpStr;
+            }
+//            LOG_DEBUG(rowStr);
             auto rowValues = parseCSVRow(rowStr);
             std::string path = rowValues.at(6);
             auto& result = cycloResultMap[path];

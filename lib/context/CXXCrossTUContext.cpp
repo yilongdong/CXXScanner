@@ -41,10 +41,16 @@ namespace CXXScanner::context {
         projectDumpFormat.set_date(ss.str());
         projectDumpFormat.set_name("test");
         std::string jsonStr;
+
         if(protoToJson(projectDumpFormat, jsonStr)) {
             std::ofstream fout(path);
             fout << jsonStr;
             fout.close();
         }
+        std::fstream output(path + ".dump", std::ios::out | std::ios::trunc | std::ios::binary);
+        if (!projectDumpFormat.SerializeToOstream(&output)) {
+            LOG_ERROR("Failed to write address book.");
+        }
+        output.close();
     }
 }

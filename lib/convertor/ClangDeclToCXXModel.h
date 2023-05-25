@@ -28,7 +28,6 @@ namespace CXXScanner::convertor {
         bool isPointerOrArrayOrReferenceOrFunctionType(clang::QualType const& type);
         std::vector<std::string> associatedTypes;
     private:
-
         clang::CompilerInstance &CI;
     };
 
@@ -46,6 +45,7 @@ namespace CXXScanner::convertor {
         [[nodiscard]] std::unique_ptr<beacon::model::CXXParam> toParamMsg(clang::ParmVarDecl const& paramVarDecl) const;
         [[nodiscard]] std::unique_ptr<beacon::model::CXXClassRelation> toClassRelationMsg(std::string const& from, std::string const& to, beacon::model::CXXClassRelation::RelationKind kind) const;
         [[nodiscard]] std::vector<beacon::model::CXXClassRelation> toClassRelationsMsgFromCXXType(std::string const& from, beacon::model::CXXType const& type, beacon::model::CXXClassRelation::RelationKind kind) const;
+        [[nodiscard]] std::unique_ptr<beacon::model::CXXFunctionRelation> toFunctionRelationMsg(std::unique_ptr<beacon::model::CXXFunction> from, std::unique_ptr<beacon::model::CXXFunction> to, beacon::model::CXXFunctionRelation::RelationKind kind) const;
     private:
         [[nodiscard]] std::string accessToString(clang::AccessSpecifier const& accessSpecifier) const;
         [[nodiscard]] std::string accessToSymbol(clang::AccessSpecifier const& accessSpecifier) const;

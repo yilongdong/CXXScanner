@@ -1,4 +1,4 @@
-add_library(callback "" Git/GitPlugin.cpp Git/GitPlugin.h)
+add_library(callback "" Git/GitPlugin.cpp Git/GitPlugin.h AST/CXXCallGraphCallback.cpp)
 add_library(CXXScanner::callback ALIAS callback)
 
 add_subdirectory(PP)

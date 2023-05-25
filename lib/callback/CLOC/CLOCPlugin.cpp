@@ -31,7 +31,14 @@ namespace CXXScanner::callback {
         json jsonResult = json::parse(output);
         for(auto const& path: filesList) {
             Result result;
-            getResultFromJson(jsonResult, path, result);
+//            LOG_DEBUG("path = {}", path);
+            if(jsonResult.find(path) != jsonResult.end()) {
+                getResultFromJson(jsonResult, path, result);
+            }
+            else {
+                LOG_DEBUG("no find path = {}", path);
+            }
+
             callback(result);
         }
 

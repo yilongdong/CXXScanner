@@ -111,6 +111,6 @@ message CXXFunctionRelation {
     REL_CALL = 0;
   }
   optional RelationKind kind = 1;
-  optional uint32 from = 2;
-  optional uint32 to = 3;
+  optional CXXFunction from = 2;
+  optional CXXFunction to = 3;
 }

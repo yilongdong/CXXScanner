@@ -1,8 +1,6 @@
 #include "convertor/ClangDeclToCXXModel.h"
 #include "utility/log.h"
-namespace {
 
-}
 namespace CXXScanner::convertor {
 
     std::unique_ptr<beacon::model::CXXBase>
@@ -77,7 +75,8 @@ namespace CXXScanner::convertor {
         if (!qualType->isBuiltinType()) {
             TypeVisitor typeVisitor(CI);
             typeVisitor.TraverseType(qualType);
-            typeMsg->mutable_associatedtypes()->Add(typeVisitor.associatedTypes.begin(), typeVisitor.associatedTypes.end());
+            typeMsg->mutable_associatedtypes()->Add(typeVisitor.associatedTypes.begin(),
+                                                    typeVisitor.associatedTypes.end());
         }
         return typeMsg;
     }
@@ -90,10 +89,12 @@ namespace CXXScanner::convertor {
         locationMsg->set_line(CI.getSourceManager().getSpellingLineNumber(srcLoc));
         return locationMsg;
     }
-    std::string ClangDeclToCXXModelConvertor::fullnameOfFunctionMsg(beacon::model::CXXFunction const& functionMsg) const {
+
+    std::string
+    ClangDeclToCXXModelConvertor::fullnameOfFunctionMsg(beacon::model::CXXFunction const &functionMsg) const {
         std::vector<std::string> params;
-        std::transform(functionMsg.params().begin(),functionMsg.params().end(), std::back_inserter(params),
-                       [](beacon::model::CXXParam const& param) {
+        std::transform(functionMsg.params().begin(), functionMsg.params().end(), std::back_inserter(params),
+                       [](beacon::model::CXXParam const &param) {
                            return param.name();
                        });
         std::string fullname = fmt::format("{} {}({})",
@@ -102,6 +103,7 @@ namespace CXXScanner::convertor {
                                            fmt::join(params, ", "));
         return fullname;
     }
+
     std::unique_ptr<beacon::model::CXXFunction>
     ClangDeclToCXXModelConvertor::toFunctionMsg(const clang::CXXMethodDecl &methodDecl) const {
         auto methodMsg = std::make_unique<beacon::model::CXXFunction>();
@@ -133,8 +135,13 @@ namespace CXXScanner::convertor {
             if (!paramDecl) continue;
             funcMsg->mutable_params()->AddAllocated(toParamMsg(*paramDecl).release());
         }
-        funcMsg->set_isstatic(functionDecl.isStatic());
 
+        if (auto const *classDecl = clang::dyn_cast<clang::CXXRecordDecl>(functionDecl.getParent())) {
+            funcMsg->set_classname(classDecl->getQualifiedNameAsString());
+        }
+
+        funcMsg->set_isstatic(functionDecl.isStatic());
+        funcMsg->set_ispurevirtual(functionDecl.isPure());
         funcMsg->set_fullname(fullnameOfFunctionMsg(*funcMsg));
         // TODO: 赋值更多函数属性
         return funcMsg;
@@ -150,7 +157,8 @@ namespace CXXScanner::convertor {
     }
 
     std::unique_ptr<beacon::model::CXXClassRelation>
-    ClangDeclToCXXModelConvertor::toClassRelationMsg(std::string const& from, std::string const& to, beacon::model::CXXClassRelation::RelationKind kind) const {
+    ClangDeclToCXXModelConvertor::toClassRelationMsg(std::string const &from, std::string const &to,
+                                                     beacon::model::CXXClassRelation::RelationKind kind) const {
         auto relation = std::make_unique<beacon::model::CXXClassRelation>();
         relation->set_kind(kind);
         relation->set_from(from);
@@ -163,18 +171,29 @@ namespace CXXScanner::convertor {
                                                                  const beacon::model::CXXType &type,
                                                                  beacon::model::CXXClassRelation::RelationKind kind) const {
         std::vector<beacon::model::CXXClassRelation> relations;
-        for(auto const& associatedType : type.associatedtypes()) {
+        for (auto const &associatedType: type.associatedtypes()) {
             auto relation = toClassRelationMsg(from, associatedType, kind);
-            if(relation) {
+            if (relation) {
                 relations.push_back(*relation.release());
             }
         }
         return relations;
     }
 
-    void TypeVisitor::TraverseType(clang::QualType const& qualType) {
-        clang::Type const * type = qualType.getTypePtr();
-        if(!type) return;
+    std::unique_ptr<beacon::model::CXXFunctionRelation>
+    ClangDeclToCXXModelConvertor::toFunctionRelationMsg(std::unique_ptr<beacon::model::CXXFunction> from,
+                                                        std::unique_ptr<beacon::model::CXXFunction> to,
+                                                        beacon::model::CXXFunctionRelation::RelationKind kind) const {
+        auto relation = std::make_unique<beacon::model::CXXFunctionRelation>();
+        relation->set_allocated_from(from.release());
+        relation->set_allocated_to(to.release());
+        relation->set_kind(kind);
+        return relation;
+    }
+
+    void TypeVisitor::TraverseType(clang::QualType const &qualType) {
+        clang::Type const *type = qualType.getTypePtr();
+        if (!type) return;
         if (auto ptrType = llvm::dyn_cast<clang::PointerType>(type)) {
             onPointerType(*ptrType);
         } else if (auto refType = llvm::dyn_cast<clang::ReferenceType>(type)) {
@@ -206,27 +225,30 @@ namespace CXXScanner::convertor {
         addAssociatedType(qualType);
     }
 
-    void TypeVisitor::onPointerType(clang::PointerType const& ptrType) {
+    void TypeVisitor::onPointerType(clang::PointerType const &ptrType) {
 //        LOG_DEBUG("pointer {}", ptrType.getPointeeType().getAsString());
 //        addAssociatedType(ptrType.getPointeeType())
         TraverseType(ptrType.getPointeeType());
         addAssociatedType(ptrType.getPointeeType());
     }
-    void TypeVisitor::onRefType(clang::ReferenceType const& refType) {
+
+    void TypeVisitor::onRefType(clang::ReferenceType const &refType) {
 //        LOG_DEBUG("ref {}", refType.getPointeeType().getAsString());
         TraverseType(refType.getPointeeType());
         addAssociatedType(refType.getPointeeType());
     }
-    void TypeVisitor::onArrayType(clang::ArrayType const& arrayType) {
+
+    void TypeVisitor::onArrayType(clang::ArrayType const &arrayType) {
 //        LOG_DEBUG("array {}", arrayType.getElementType().getAsString());
         TraverseType(arrayType.getElementType());
         addAssociatedType(arrayType.getElementType());
     }
-    void TypeVisitor::onFunctionType(clang::FunctionType const& functionType) {
+
+    void TypeVisitor::onFunctionType(clang::FunctionType const &functionType) {
 //        LOG_DEBUG("return type {}", functionType.getReturnType().getAsString());
         TraverseType(functionType.getReturnType());
-        if(auto const functionProtoType = functionType.getAs<clang::FunctionProtoType>()) {
-            for (auto paramType : functionProtoType->getParamTypes()) {
+        if (auto const functionProtoType = functionType.getAs<clang::FunctionProtoType>()) {
+            for (auto paramType: functionProtoType->getParamTypes()) {
 //                LOG_DEBUG("param type {}", paramType.getAsString());
                 TraverseType(paramType);
                 addAssociatedType(paramType);
@@ -234,7 +256,8 @@ namespace CXXScanner::convertor {
         }
         addAssociatedType(functionType.getReturnType());
     }
-    void TypeVisitor::onRecordType(clang::RecordType const& recordType) {
+
+    void TypeVisitor::onRecordType(clang::RecordType const &recordType) {
         auto recordDecl = recordType.getDecl();
         addAssociatedType(recordType.getCanonicalTypeInternal());
 //        LOG_DEBUG("record {}", recordDecl->getQualifiedNameAsString());
@@ -244,11 +267,13 @@ namespace CXXScanner::convertor {
         //     TraverseType(field->getType().getTypePtr());
         // }
     }
-    void TypeVisitor::onTemplateSpecializationType(clang::TemplateSpecializationType const& templateSpecializationType) {
-        const auto * templateDecl = templateSpecializationType.getTemplateName().getAsTemplateDecl();
+
+    void
+    TypeVisitor::onTemplateSpecializationType(clang::TemplateSpecializationType const &templateSpecializationType) {
+        const auto *templateDecl = templateSpecializationType.getTemplateName().getAsTemplateDecl();
         assert(templateDecl != nullptr && "Template declaration not found");
 //        LOG_DEBUG("TemplateSpecializationType {}", templateDecl->getQualifiedNameAsString());
-        for (auto arg : templateSpecializationType.template_arguments()) {
+        for (auto arg: templateSpecializationType.template_arguments()) {
             if (arg.getKind() == clang::TemplateArgument::Type) {
 //                LOG_DEBUG("TemplateSpecializationType args {}", arg.getAsType().getAsString());
                 TraverseType(arg.getAsType());
@@ -257,19 +282,23 @@ namespace CXXScanner::convertor {
         }
         addAssociatedType((templateSpecializationType.getCanonicalTypeInternal()));
     }
-    void TypeVisitor::onDependentNameType(clang::DependentNameType const& dependentNameType) {
+
+    void TypeVisitor::onDependentNameType(clang::DependentNameType const &dependentNameType) {
 //        LOG_DEBUG("dependentType {}", dependentNameType.getCanonicalTypeInternal().getAsString());
 //        TraverseType(dependentNameType.getCanonicalTypeInternal());
 //        addAssociatedType(dependentNameType.getCanonicalTypeInternal());
     }
-    void TypeVisitor::onElaboratedType(clang::ElaboratedType const& elaboratedType) {
+
+    void TypeVisitor::onElaboratedType(clang::ElaboratedType const &elaboratedType) {
 //        LOG_DEBUG("elaboratedType {}", elaboratedType.getNamedType().getAsString());
         TraverseType(elaboratedType.getNamedType());
         addAssociatedType(elaboratedType.getNamedType());
     }
-    void TypeVisitor::onDependentTemplateSpecializationType(clang::DependentTemplateSpecializationType const& dependentTemplateSpecializationType) {
+
+    void TypeVisitor::onDependentTemplateSpecializationType(
+            clang::DependentTemplateSpecializationType const &dependentTemplateSpecializationType) {
         uint32_t numArgs = dependentTemplateSpecializationType.getNumArgs();
-        for(uint32_t i = 0; i < numArgs; ++i) {
+        for (uint32_t i = 0; i < numArgs; ++i) {
             auto arg = dependentTemplateSpecializationType.getArg(i);
             if (arg.getKind() == clang::TemplateArgument::Type) {
 //                LOG_DEBUG("dependentTemplateSpecializationType {}", arg.getAsType().getAsString());
@@ -282,39 +311,42 @@ namespace CXXScanner::convertor {
         addAssociatedType(dependentTemplateSpecializationType.getCanonicalTypeInternal());
     }
 
-    std::string TypeVisitor::getCanonicalUnqualifiedTypeName(clang::QualType const& type) {
+    std::string TypeVisitor::getCanonicalUnqualifiedTypeName(clang::QualType const &type) {
 
         return type.getDesugaredType(CI.getASTContext()).getAsString();
     }
-    void TypeVisitor::addAssociatedType(clang::QualType const& type) {
+
+    void TypeVisitor::addAssociatedType(clang::QualType const &type) {
         bool isPointerOrArrayOrReferenceOrFunction = isPointerOrArrayOrReferenceOrFunctionType(type);
         bool isUserDefined = isUserDefinedType(type);
         clang::QualType mutableType = type;
         auto name = getCanonicalUnqualifiedTypeName(type);
-        bool hasExist = std::any_of(associatedTypes.begin(), associatedTypes.end(), [&name](auto const& typenName) {
+        bool hasExist = std::any_of(associatedTypes.begin(), associatedTypes.end(), [&name](auto const &typenName) {
             return typenName == name;
         });
 
-        if(isUserDefined && !hasExist && !isPointerOrArrayOrReferenceOrFunction) {
-            if(name == "const std::string *") {
+        if (isUserDefined && !hasExist && !isPointerOrArrayOrReferenceOrFunction) {
+            if (name == "const std::string *") {
                 LOG_ERROR("test error");
+                return;
             }
             associatedTypes.push_back(name);
         }
     }
-    bool TypeVisitor::isUserDefinedType(clang::QualType const& type) const {
+
+    bool TypeVisitor::isUserDefinedType(clang::QualType const &type) const {
         bool isBuiltinType = type->isBuiltinType();
         std::string typeName = type.getCanonicalType().getUnqualifiedType().getAsString();
         bool isStdType = typeName.find("std::") == 0 || typeName.find("class std::") == 0;
         return !isBuiltinType && !isStdType;
     }
 
-    bool TypeVisitor::isPointerOrArrayOrReferenceOrFunctionType(clang::QualType const& type) {
+    bool TypeVisitor::isPointerOrArrayOrReferenceOrFunctionType(clang::QualType const &type) {
         return
-            llvm::dyn_cast<clang::PointerType>(type) ||
-            llvm::dyn_cast<clang::ReferenceType>(type) ||
-            llvm::dyn_cast<clang::ArrayType>(type) ||
-            llvm::dyn_cast<clang::FunctionType>(type);
+                llvm::dyn_cast<clang::PointerType>(type) ||
+                llvm::dyn_cast<clang::ReferenceType>(type) ||
+                llvm::dyn_cast<clang::ArrayType>(type) ||
+                llvm::dyn_cast<clang::FunctionType>(type);
     }
 
 }
