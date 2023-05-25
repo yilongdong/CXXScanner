@@ -1,21 +1,8 @@
-# tu-dumper
+# CXXScanner
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-
-输入一条编译指令以及C++源文件，对编译指令对应的翻译转换单元的代码进行AST分析，并将分析结果输出为json分析模型
-```mermaid
-graph LR
-    D[源文件] --> E(构建工具)
-    E --> F[编译数据库]
-    F --> B(CXXScanner)
-    D --> B
-    B --> C[CXXTUModel]
-    C --> G[protobufModel]
-    G --> H[mongoDB]
-    H -->|graphql| I[web]
-```
-TODO: Fill out this long description.
-
+使用LibTooling对C++代码进行ATS分析获取项目的分析模型文件。
+分析模型包含类模型，方法模型，调用关系，代码行数信息，圈复杂度等等。
 
 ## Table of Contents
 
@@ -47,15 +34,11 @@ brew install ninja
 ```shell
 
 ./build.sh
-ln -s /usr/local/lib/clang/  ./install/lib/clang
-./install/bin/CXXScanner --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
+ln -s /usr/local/lib/clang/  ./install/lib/clang # 如果运行分析时输出错误信息，大概率是因为没有做这一步
+# 接着编辑toml配置文件，最后运行
+./install/bin/CXXScanner
 ```
 
-## Usage
-
-```shell
-./install/bin/CXXScanner --output_dir ./result.json --compdb /Users/dongyilong/projects/Clion/TUDumper/build/debug/compile_commands.json --files all --verbose
-```
 
 https://github.com/sourcegraph/lsif-clang
 If you get missing header warnings (possible due to divergence between lsif-clang and Apple Clang), use an extra flag:
